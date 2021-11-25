@@ -1,0 +1,116 @@
+﻿@model Pagination.Models.PaginateModel
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+    <div class="dataTables_paginate paging_full_numbers">
+        <ul class="pagination">
+            <li class="paginate_button page-item first @(Model.ActivePage == 1 ? "disabled" : "")">
+                @{
+                    if (Model.PaginateModelClickEvent.IsJavaScript)
+                    {
+                        <a href="javascript:;" onclick="@(Model.PaginateModelClickEvent.PaginateClickName+"("+1+")")"
+                           class="page-link"><i class="fa fa-angle-double-left"></i></a>
+                    }
+                    else
+                    {
+                        <a href="@(Model.PaginateModelClickEvent.Url+"?page="+1)"
+                           class="page-link"><i class="fa fa-angle-double-left"></i></a>
+                    }
+                }
+            </li>
+            <li class="paginate_button page-item previous @(Model.ActivePage == 1 ? "disabled" : "")">
+                @{
+                    if (Model.PaginateModelClickEvent.IsJavaScript)
+                    {
+                        <a href="javascript:;" onclick="@(Model.PaginateModelClickEvent.PaginateClickName+"("+(Model.ActivePage-1)+")")"
+                           class="page-link"><i class="fa fa-angle-left"></i></a>
+                    }
+                    else
+                    {
+                        <a href="@(Model.PaginateModelClickEvent.Url+"?page="+(Model.ActivePage-1))"
+                           class="page-link"><i class="fa fa-angle-left"></i></a>
+                    }
+                }
+            </li>
+
+            @foreach (var item in Model.List)
+            {
+                <li class="paginate_button page-item @(item == Model.ActivePage ? "active"  : "")">
+                    @{
+                        if (item == Model.ActivePage)
+                        {
+                            <a href="javascript:;" class="page-link">@item</a>
+                        }
+                        else
+                        {
+                            if (Model.PaginateModelClickEvent.IsJavaScript)
+                            {
+                                <a href="javascript:;" onclick="@(Model.PaginateModelClickEvent.PaginateClickName+"("+(item)+")")" class="page-link">@item</a>
+                            }
+                            else
+                            {
+                                <a href="@(Model.PaginateModelClickEvent.Url+"?page="+item)" class="page-link">@item</a>
+                            }
+
+                        }
+
+                    }
+                </li>
+            }
+
+
+            <li class="paginate_button page-item next @(Model.ActivePage == Model.TotalCeilNumber || Model.Total == 0 ? "disabled" : "")">
+                @{
+                    if (Model.PaginateModelClickEvent.IsJavaScript)
+                    {
+                        <a href="javascript:;" onclick="@(Model.PaginateModelClickEvent.PaginateClickName+"("+(Model.ActivePage+1)+")")"
+                           class="page-link"><i class="fa fa-angle-right"></i></a>
+                    }
+                    else
+                    {
+                        <a href="@(Model.PaginateModelClickEvent.Url+"?page="+(Model.ActivePage+1))" class="page-link">
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    }
+                }
+            </li>
+            <li class="paginate_button page-item last @(Model.ActivePage == Model.TotalCeilNumber || Model.Total == 0 ? "disabled" : "")">
+                @{
+                    if (Model.PaginateModelClickEvent.IsJavaScript)
+                    {
+                        <a href="javascript:;" onclick="@(Model.PaginateModelClickEvent.PaginateClickName+"("+(Model.TotalCeilNumber)+")")"
+                           class="page-link"><i class="fa fa-angle-double-right"></i></a>
+                    }
+                    else
+                    {
+                        <a href="@(Model.PaginateModelClickEvent.Url+"?page="+(Model.TotalCeilNumber))" tabindex="0"
+                           class="page-link"><i class="fa fa-angle-double-right"></i></a>
+                    }
+                }
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 d-none">
+    <div role="status" aria-live="polite" class="dataTables_info">
+        79 sonuç içerisinden 1-10 arası gösteriliyor
+    </div>
+</div>
+
+<script>
+    function GetPaginateContent(paginateModel,selector) {
+        $.ajax({
+            url: "@Url.Action("PaginateRefresh", "Shared")",
+            type: "Post",
+            dataType: "HTML",
+            data: { paginateModel: paginateModel },
+            beforeSend: function () {
+                $(".pagination").addClass("disabled");
+            },
+            success: function (res) {
+                $(selector).html(res);
+                $(".pagination").removeClass("disabled");
+            },
+            error: function (err) {
+            }
+        });
+    }
+</script>

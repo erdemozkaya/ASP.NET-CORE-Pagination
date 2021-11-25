@@ -1,0 +1,12 @@
+﻿@model List<Pagination.Models.Users>
+@foreach (var user in Model)
+{
+    <tr>
+        <td>@user.Id</td>
+        <td>@user.Name</td>
+        <td>@user.Username</td>
+        <td>@user.Email</td>
+        <td>@user.Phone</td>
+        <td>@user.Website</td>
+    </tr>
+}

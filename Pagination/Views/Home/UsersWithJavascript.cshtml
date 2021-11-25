@@ -1,0 +1,57 @@
+﻿@model Tuple<List<Pagination.Models.Users>, Pagination.Models.PaginateModel>
+<div>
+    <table id="datatable" class="table table-striped  table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Website</th>
+            </tr>
+        </thead>
+        <tbody id="render">
+            @foreach (var user in Model.Item1)
+            {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>@user.Username</td>
+                    <td>@user.Email</td>
+                    <td>@user.Phone</td>
+                    <td>@user.Website</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="col-md-12">
+        <div class="row payment-page-pagination">
+            @await Component.InvokeAsync("Paginate", new { paginateModel = Model.Item2 })
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        function PaginateClick(page) {
+            $.ajax({
+                url: "@Url.Action("UsersWithJavascript", "Home")",
+                type: "Post",
+                dataType: "HTML",
+                data: { page: page },
+                beforeSend: function () {
+                },
+                success: function (data) {
+                    $('#render').html(data);
+                },
+                error: function (err) {
+                }
+            });
+            var paginateModel = @Html.Raw(Json.Serialize(Model.Item2))
+                paginateModel.activePage = page;
+            GetPaginateContent(paginateModel,".payment-page-pagination");
+        }
+
+    </script>
+}
